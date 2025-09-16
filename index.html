@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OwnAi Yappers</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #6b21a8, #000000);
+      color: white;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+    }
+    p {
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 2rem;
+    }
+    .search {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      flex: 1;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .results {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <h1>OwnAi Yappers 🔥</h1>
+  <p>একটি নির্দিষ্ট টুইটার অ্যাকাউন্টের চারপাশে সবচেয়ে বেশি 'যাপ' করে এমনদের তালিকা দেখুন!</p>
+
+  <div class="search">
+    <input type="text" id="username" placeholder="Twitter ইউজারনেম লিখুন (যেমন: ownaiNetwork)" />
+    <button onclick="getYappers()">অনুসন্ধান করুন</button>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <script>
+    async function getYappers() {
+      const username = document.getElementById("username").value.trim();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "লোড হচ্ছে...";
+
+      try {
+        const res = await fetch(`https://your-backend-url.up.railway.app/top-posters?username=${username}`);
+        const data = await res.json();
+        const entries = Object.entries(data.top_posters || {});
+        if (entries.length === 0) {
+          resultsDiv.innerHTML = "কোনো যাপকারী পাওয়া যায়নি।";
+          return;
+        }
+        resultsDiv.innerHTML = entries.map(([user, count]) =>
+          `<div class='card'><span>@${user}</span><span>পোস্ট: ${count}</span></div>`
+        ).join("");
+      } catch (err) {
+        resultsDiv.innerHTML = "ডেটা আনতে সমস্যা হয়েছে।";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
